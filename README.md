@@ -30,8 +30,9 @@
 * 湿度路径：`/sys/bus/iio/devices/iio:device0/in_humidityrelative_input`
 
 ### 4.2 核心代码逻辑
-* **`dht22_report.c`**: 运行于开发板，负责自动扫描 IIO 节点，定时读取并发送 `temp,humi` 格式字符串。
-* **`my_gateway.c`**: 运行于 Ubuntu，负责 MQTT 消息回调、JSON 拼装及华为云鉴权连接。
+* **`dht22_report`**: 运行于开发板，负责自动扫描 IIO 节点，定时读取并发送 `temp,humi` 格式字符串。由dht22.c编译而来，使用交叉编译器'arm-linux-gnueabihf-gcc dht22.c -o dht22_report -I 你的目录/paho.mqtt.c-master/src -L 你的目录/paho.mqtt.c-master/build/output -lpaho-mqtt3c'
+* * **`my_sender`**: 运行测试，查看是否能连接上华为云服务器并成功传送数据。同样使用交叉编译器
+* **`my_gateway`**: 运行于 Ubuntu，负责 MQTT 消息回调、JSON 拼装及华为云鉴权连接。使用gcc即可编译
 
 ## 5. 数据格式
 **上报 JSON 示例：**
@@ -47,7 +48,11 @@
 }
 ```
 
-## 6. 项目成果展示
+## 6. 实际运行
+* ubuntu运行'./my_gateway'，开发板运行'./dht22_report'
+* 华为云IoTDA添加产品-设备-服务
+
+## 7. 项目成果展示
 * **实时性：** 数据上报频率 5s/次。
 * **稳定性：** 支持传感器重连机制，自动处理 `Connection timed out` 异常。
 * **可视化：** 华为云控制台实时在线，支持历史数据曲线回溯。
